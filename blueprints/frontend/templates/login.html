@@ -15,7 +15,7 @@
         <h1>Login</h1>
 
         <!-- Form -->
-        <form action="dashboard.html">
+        <form onsubmit="login_process()">
             <input type="email" placeholder="Your Email" required>
             <input type="password" placeholder="Password" required>
             <button type="submit">Log In</button>
@@ -25,4 +25,23 @@
         <a href="registration.html" class="link">Don't have an account? Register</a>
     </div>
 </body>
+<script>
+    function login_process() {
+        const email = document.querySelector('input[type="email"]').value;
+        const password = document.querySelector('input[type="password"]').value;
+        fetch('/api/auth/login',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({email, password})
+        }).then(response => {
+            if(response.status === 200) {
+                window.location.href = '/dashboard';
+            } else {
+                alert('Invalid credentials');
+            }
+        });
+    }
+</script>
 </html>
