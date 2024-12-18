@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Logo -->
+        <h2>Registration</h2>
+
+        <!-- Form -->
+        <form onsubmit="register_process()">
+            <input type="email" placeholder="Your Email" required>
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="text" id="first_name" placeholder="First Name" required>
+            <input type="password" placeholder="Password" required>
+            <input type="password" placeholder="Repeat Password" required>
+            <button type="submit">Register</button>
+        </form>
+
+        <!-- Login Redirect -->
+        <a href="/login" class="link">Already have an account? Log In</a>
+    </div>
+</body>
+<script>
+    function register_process() {
+        const email = document.querySelector('input[type="email"]').value;
+        const username = document.querySelector('#username').value;
+        const first_name = document.querySelector('#first_name').value;
+        const password = document.querySelector('input[type="password"]').value;
+        const repeat_password = document.querySelector('input[type="password"]').value;
+        if (password !== repeat_password) {
+            alert('Passwords do not match');
+            return;
+        }
+
+        fetch('/api/auth/register',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({email, username, password, repeat_password, first_name})
+        }).then(response => {
+            if(response.status === 201) {
+                window.location.href = '/login';
+            } else {
+                alert('Error in registration');
+            }
+        });
+    }
+</script>
+</html>

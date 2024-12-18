@@ -1,6 +1,6 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, redirect, url_for
 from utils import admin_required, custom_jwt_required
-
+from flask_jwt_extended import verify_jwt_in_request
 
 frontend_bp = Blueprint('frontend', __name__)
 
@@ -11,6 +11,8 @@ def index():
 
 @frontend_bp.route('/login')
 def loginpage():
+    if verify_jwt_in_request(optional=True):
+        return redirect('/')
     return render_template('login.html')
 
 
@@ -18,3 +20,6 @@ def loginpage():
 def registerpage():
     return render_template('register.html')
 
+@frontend_bp.route('/logout')
+def logout():
+    return redirect(url_for('auth.logout'))

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, redirect
+from flask import Blueprint, request, jsonify, redirect, url_for
 from flask_jwt_extended import create_access_token, verify_jwt_in_request, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import *
@@ -16,16 +16,15 @@ def register():
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    if verify_jwt_in_request(optional=True):
-        return redirect('dashboard.index')
     data = request.json
-    user = User.query.filter_by(username=data['username']).first()
+    user = User.query.filter_by(email=data['email']).first()
     if not user or not check_password_hash(user.password, data['password']):
         return jsonify({'message': 'Invalid credentials'}), 401
     access_token = create_access_token(identity=user.user_id, additional_claims={'role': user.role, 'username': user.username})
-    return jsonify(access_token=access_token), 200
+    return jsonify(access_token=access_token), 201
 
 @auth_bp.route('/logout', methods=['GET'])
 def logout():
-    unset_jwt_cookies()
-    return redirect('auth.login')
+    response = redirect(url_for('frontend.loginpage'))
+    unset_jwt_cookies(response)
+    return response, 302
