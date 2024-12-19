@@ -20,9 +20,9 @@ def loginpage():
 def registerpage():
     return render_template('register.html')
 
-@frontend_bp.route('/attempt')
-def attemptpage():
-    return render_template('attempt.html')
+@frontend_bp.route('/attempt/<int:quiz>')
+def attemptpage(quiz):
+    return render_template('attempt.html',quiz_id=quiz)
 
 @frontend_bp.route('/quiz_create')
 @admin_required()
