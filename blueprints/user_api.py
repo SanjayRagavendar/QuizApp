@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity,jwt_required
-from models import db, User, Quiz
+from models import db, User, Question,Quiz
 
 user_api=Blueprint('user_api',__name__)
 @user_api.route('/quiz', methods=['GET'])
@@ -28,3 +28,22 @@ def account_details(user_id):
         'role':user.role,
         'email':user.email
     }
+    return jsonify(user_data),200
+
+@user_api.route('/quiz/<int:quiz_id>/questions',methods=['GET'])
+@jwt_required()
+def get_questions(quiz_id):
+    questions=Question.query.filter_by(quiz_id=quiz_id).all()
+    question_list=[]
+    for question in questions:
+        #options=question.option
+        question_list.append({
+            'question_id':question.question_id,
+            'question_content':question.question_content,
+            'question_type':question.question_type,
+            'quiz_id':question.quiz_id,
+            'options':question.options.split(','),
+            'correct_answer':question.correct_answer,
+            'explation':question.explation
+        })
+    return jsonify(question_list),200
