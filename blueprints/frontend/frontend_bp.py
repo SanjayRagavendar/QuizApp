@@ -20,6 +20,18 @@ def loginpage():
 def registerpage():
     return render_template('register.html')
 
+@frontend_bp.route('/attempt')
+def attemptpage():
+    return render_template('attempt.html')
+
+@frontend_bp.route('/quiz_create')
+def quizcreatepage():
+    return render_template('quiz_create.html')
+
+@frontend_bp.route('/result')
+def resultpage():
+    return render_template('result.html')
+
 @frontend_bp.route('/logout')
 def logout():
     return redirect(url_for('auth.logout'))
