@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, url_for
 from utils import admin_required
-from flask_jwt_extended import verify_jwt_in_request, jwt_required
+from flask_jwt_extended import verify_jwt_in_request, jwt_required,get_jwt_identity
 
 frontend_bp = Blueprint('frontend', __name__)
 
@@ -25,12 +25,19 @@ def attemptpage():
     return render_template('attempt.html')
 
 @frontend_bp.route('/quiz_create')
+@admin_required()
 def quizcreatepage():
     return render_template('quiz_create.html')
 
 @frontend_bp.route('/result')
 def resultpage():
     return render_template('result.html')
+
+@frontend_bp.route('/account')
+@jwt_required()
+def accountpage():
+    user_id=get_jwt_identity()
+    return render_template('account.html',user_id=user_id)
 
 @frontend_bp.route('/logout')
 def logout():
