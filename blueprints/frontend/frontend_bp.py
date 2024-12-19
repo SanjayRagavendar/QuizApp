@@ -1,11 +1,11 @@
 from flask import Blueprint, request, render_template, redirect, url_for
-from utils import admin_required, custom_jwt_required
-from flask_jwt_extended import verify_jwt_in_request
+from utils import admin_required
+from flask_jwt_extended import verify_jwt_in_request, jwt_required
 
 frontend_bp = Blueprint('frontend', __name__)
 
 @frontend_bp.route('/')
-@custom_jwt_required()
+@jwt_required()
 def index():
     return render_template('dashboard.html')
 

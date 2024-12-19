@@ -8,7 +8,7 @@ def admin_required():
         @wraps(fn)
         def decorator(*args, **kwargs):
             try:
-                verify_jwt_in_request(optional=True)
+                verify_jwt_in_request()
                 claims = get_jwt()
                 if claims.get('role') == 'admin':
                     return fn(*args, **kwargs)
@@ -16,22 +16,7 @@ def admin_required():
                     return jsonify({"msg": "Course admins only!"}), 403
             except Exception as e:
                 next_url = urlparse(request.url).path
-                response = redirect(url_for('frontend.loginpage', next=next_url))
-                unset_jwt_cookies(response)
-                return response, 302        
-        return decorator
-    return wrapper
-
-def custom_jwt_required():
-    def wrapper(fn):
-        @wraps(fn)
-        def decorator(*args, **kwargs):
-            try:
-                verify_jwt_in_request(optional=True)
-                return fn(*args, **kwargs)
-            except Exception as e:
-                next_url = urlparse(request.url).path
-                response = redirect(url_for('frontend.loginpage', next=next_url))
+                response = redirect(url_for('auth_dashboard.login', next=next_url))
                 unset_jwt_cookies(response)
                 return response, 302        
         return decorator
