@@ -10,6 +10,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
     role=db.Column(db.Enum('admin','user'),default='user')
+    created_quizzes = db.relationship('Quiz', backref='creator', lazy=True)
 
 class Quiz(db.Model):
     __tablename__ = 'quiz'

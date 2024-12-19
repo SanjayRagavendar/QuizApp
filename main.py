@@ -22,10 +22,12 @@ jwt = JWTManager(app)
 from blueprints.auth_bp import auth_bp
 from blueprints.frontend.frontend_bp import frontend_bp
 from blueprints.admin_api import admin_api
+from blueprints.user_api import user_api
 
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(frontend_bp)
 app.register_blueprint(admin_api, url_prefix='/api/admin')
+app.register_blueprint(user_api, url_prefix='/api/user')
 
 if __name__ == '__main__':
     app.run(debug=True)
