@@ -3,20 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attempt Quiz | Quiz Maker App</title>
+    <title>Quiz Attempt</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Body Styling */
+        body {
+            background: linear-gradient(to bottom, #1f2847, #ffdcdc);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        /* Main Container */
+        .container {
+            background-color: #fff;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* Page Title */
+        .container h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            width: 80%;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 8px 0 0 8px;
+            outline: none;
+        }
+
+        .search-bar button {
+            background-color: #1f2847;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+        }
+
+        .search-bar button:hover {
+            background-color: #1f2847;
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            margin: 20px 0;
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown select {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .dropdown button {
+            margin-top: 20px;
+            background-color: #1f2847;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown button:hover {
+            background-color: #1f2847;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+                max-width: 100%;
+            }
+
+            .search-bar input {
+                width: 70%;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Main Container -->
     <div class="container">
-        <h1>Quiz: Science & Nature</h1>
-        <form>
-            <p>1. What is the capital of France?</p>
-            <label><input type="radio" name="q1" value="Paris"> Paris</label>
-            <label><input type="radio" name="q1" value="London"> London</label>
-            <label><input type="radio" name="q1" value="Berlin"> Berlin</label>
+        <h1>Quiz Attempt</h1>
 
-            <button type="submit">Submit</button>
-        </form>
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" placeholder="Search category or topic..." id="searchInput">
+            <button onclick="searchCategory()">Search</button>
+        </div>
+
+        <!-- Dropdown for Categories -->
+        <div class="dropdown">
+            <select id="categorySelect">
+                <option value="" disabled selected>Select a Category</option>
+                <option value="cn.html">CN (Computer Networks)</option>
+                <option value="os.html">OS (Operating Systems)</option>
+                <option value="dsa.html">DSA (Data Structures and Algorithms)</option>
+            </select>
+            <button onclick="goToCategory()">Go</button>
+        </div>
     </div>
+
+    <!-- JavaScript for Redirection and Search -->
+    <script>
+        // Redirect based on selected category
+        function goToCategory() {
+            const selectedCategory = document.getElementById('categorySelect').value;
+            if (selectedCategory) {
+                window.location.href = selectedCategory;
+            } else {
+                alert("Please select a category!");
+            }
+        }
+
+        // Search Functionality
+        function searchCategory() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            if (input.includes("cn")) {
+                window.location.href = "cn.html";
+            } else if (input.includes("os")) {
+                window.location.href = "os.html";
+            } else if (input.includes("dsa")) {
+                window.location.href = "dsa.html";
+            } else {
+                alert("Category not found! Please try 'CN', 'OS', or 'DSA'.");
+            }
+        }
+    </script>
 </body>
 </html>
