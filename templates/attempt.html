@@ -131,7 +131,47 @@
 
         // Handle submission
         function handleSubmit() {
-            alert('Your answers have been submitted! (Submission logic pending)');
+            const container = document.getElementById('quiz-container');
+            const questions = container.getElementsByClassName('question');
+            const answers = [];
+
+            for (let question of questions) {
+                const questionId = question.querySelector('input[type="radio"]').name.split('-')[1];
+                const selectedOption = question.querySelector('input[type="radio"]:checked');
+
+                if (selectedOption) {
+                    answers.push({
+                        question_id: questionId,
+                        answer: selectedOption.value
+                    });
+                } else {
+                    answers.push({
+                        question_id: questionId,
+                        answer: null
+                    });
+                }
+            }
+
+            const quizId = window.location.pathname.split('/').pop();
+
+            fetch(`/api/user/quiz/${quizId}/submit`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({ quiz_id: quizId, answers: answers })
+            })
+            .then(response => response.json())
+            .then(data => {
+                attemptId = data.attempt_id;
+                window.location.href = `/result/${attemptId}`;
+                
+            })
+            .catch(error => {
+                console.error('Error submitting quiz:', error);
+                alert('Error submitting quiz. Please try again later.');
+            });
         }
 
         // Fetch questions on page load

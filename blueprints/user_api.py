@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity,jwt_required
-from models import db, User, Question,Quiz
+from models import db, User, Question,Quiz, QuizAttempt
 
 user_api=Blueprint('user_api',__name__)
 @user_api.route('/quiz', methods=['GET'])
@@ -47,3 +47,24 @@ def get_questions(quiz_id):
             'explation':question.explation
         })
     return jsonify(question_list),200
+
+@user_api.route('/quiz/<int:quiz_id>/submit',methods=['POST'])
+@jwt_required()
+def submit_quiz(quiz_id):
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    answers = data.get('answers')
+    score = 0
+    questions = Question.query.filter_by(quiz_id=quiz_id).all()
+    for answer in answers:
+        question_id = answer.get('question_id')
+        answer = answer.get('answer')
+        ques = Question.query.filter_by(question_id=int(question_id)).first()
+        print(ques.correct_answer+"+ "+ answer)
+        if ques and ques.correct_answer.strip() == answer.strip():
+            score += 1
+    print(score)
+    user_attempt = QuizAttempt(user_id=user_id, quiz_id=quiz_id, score=score, max_score=len(questions))
+    db.session.add(user_attempt)
+    db.session.commit()
+    return jsonify({'score': score, 'attempt_id':user_attempt.attempt_id}), 200

@@ -3,15 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Results | Quiz Maker App</title>
-    <link rel="stylesheet" href="../static/css/styles.css">
+    <title>Quiz Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #1f2847, #ffdcdc);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .container h1 {
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin-top: 20px;
+            background: #1f3b4d;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: #152731;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Quiz Results</h1>
-        <p>Score: <strong>90%</strong></p>
-        <p>You answered 9 out of 10 questions correctly. Well done!</p>
-        <button onclick="location.href='/'">Back to Dashboard</button>
+        <p>Your Score: {{ score }} / {{ max_score }}</p>
+        <a href="{{ url_for('frontend.attemptpage', quiz=quiz_id) }}" class="btn">Attempt Again</a>
     </div>
 </body>
 </html>

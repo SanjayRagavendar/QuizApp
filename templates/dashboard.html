@@ -154,7 +154,7 @@
                     quizBox.innerHTML = `
                         <h2>${quiz.quiz_name}</h2>
                         <p>${quiz.quiz_description}</p>
-                        <button onclick="redirectTo('/attempt?id=${quiz.quiz_id}')">Start Quiz</button>
+                        <button onclick="redirectTo('/attempt/${quiz.quiz_id}')">Start Quiz</button>
                     `;
 
                     container.appendChild(quizBox);
