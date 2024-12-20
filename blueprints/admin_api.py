@@ -83,7 +83,7 @@ def questions(quiz_id):
             question_content=data['text'],
             question_type=data['answer']['type'],
             quiz_id=quiz_id,
-            options=','.join(data['options']) if data['answer']['type'] == 'MCQ' else 'true,false' if data['answer']['type'] == 'truefalse' else '',
+            options=','.join(data['answer']['options']) if data['answer']['type'] == 'MCQ' else 'true,false' if data['answer']['type'] == 'tf' else '',
             correct_answer=data['answer']['correctAnswer'],
             
         )
