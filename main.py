@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify
-from flask_jwt_extended import JWTManager
+from flask import Flask, request, jsonify, redirect, url_for
+from flask_jwt_extended import JWTManager, unset_jwt_cookies
 from datetime import timedelta
 from models import *
+from urllib.parse import urlparse
 
 app = Flask(__name__)
 
@@ -20,6 +21,24 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=10)
 # Initialize
 db.init_app(app)
 jwt = JWTManager(app)
+
+@jwt.expired_token_loader
+def expired_token_callback(jwt_header, jwt_payload):
+    response = redirect(url_for('frontend.loginpage'))
+    unset_jwt_cookies(response)
+    return response, 302
+
+@jwt.invalid_token_loader
+def invalid_token_callback(error):
+    response = redirect(url_for('frontend.loginpage'))
+    unset_jwt_cookies(response)
+    return response, 302
+
+@jwt.unauthorized_loader
+def missing_token_callback(error):
+    response = redirect(url_for('frontend.loginpage'))
+    unset_jwt_cookies(response)
+    return response, 302
 
 from blueprints.auth_bp import auth_bp
 from blueprints.frontend.frontend_bp import frontend_bp
