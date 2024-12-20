@@ -1,6 +1,7 @@
 from flask import Blueprint, request, render_template, redirect, url_for
 from utils import admin_required
-from flask_jwt_extended import verify_jwt_in_request, jwt_required
+from flask_jwt_extended import verify_jwt_in_request, jwt_required,get_jwt_identity
+from models import QuizAttempt
 
 frontend_bp = Blueprint('frontend', __name__)
 
@@ -20,18 +21,28 @@ def loginpage():
 def registerpage():
     return render_template('register.html')
 
-@frontend_bp.route('/attempt')
-def attemptpage():
-    return render_template('attempt.html')
+@frontend_bp.route('/attempt/<int:quiz>')
+@jwt_required()
+def attemptpage(quiz):
+    return render_template('attempt.html',quiz_id=quiz)
 
 @frontend_bp.route('/quiz_create')
+@admin_required()
 def quizcreatepage():
     return render_template('quiz_create.html')
 
-@frontend_bp.route('/result')
-def resultpage():
-    return render_template('result.html')
+@frontend_bp.route('/account')
+@jwt_required()
+def accountpage():
+    user_id=get_jwt_identity()
+    return render_template('account.html',user_id=user_id)
 
 @frontend_bp.route('/logout')
 def logout():
     return redirect(url_for('auth.logout'))
+
+@frontend_bp.route('/result/<int:attempt_id>')
+@jwt_required()
+def resultpage(attempt_id):
+    attempt = QuizAttempt.query.filter_by(attempt_id=attempt_id).first()
+    return render_template('result.html',score=attempt.score,max_score=attempt.max_score, quiz_id=attempt.quiz_id)

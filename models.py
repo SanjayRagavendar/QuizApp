@@ -10,6 +10,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
     role=db.Column(db.Enum('admin','user'),default='user')
+    created_quizzes = db.relationship('Quiz', backref='creator', lazy=True)
 
 class Quiz(db.Model):
     __tablename__ = 'quiz'
@@ -36,16 +37,14 @@ class QuizAttempt(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
     score = db.Column(db.Integer, nullable=False)
     max_score = db.Column(db.Integer, nullable=False)
-    start_time = db.Column(db.DateTime, nullable=False)
-    end_time = db.Column(db.DateTime, nullable=False)
 
-class QuestionAttempt(db.Model):
-    __tablename__ = 'question_attempt'
-    question_attempt_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'))
-    attempt_id = db.Column(db.Integer, db.ForeignKey('quiz_attempt.attempt_id'))
-    user_answer = db.Column(db.String(120), nullable=False)
-    is_correct = db.Column(db.Boolean(), nullable=False)
+# class QuestionAttempt(db.Model):
+#     __tablename__ = 'question_attempt'
+#     question_attempt_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'))
+#     attempt_id = db.Column(db.Integer, db.ForeignKey('quiz_attempt.attempt_id'))
+#     user_answer = db.Column(db.String(120), nullable=False)
+#     is_correct = db.Column(db.Boolean(), nullable=False)
 
 # class userFeedback(db.Model):
 #     __tablename__ = 'user_feedback'

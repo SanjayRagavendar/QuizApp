@@ -3,165 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Attempt</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Attempt Quiz</title>
     <style>
-        /* General Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        /* Body Styling */
         body {
+            font-family: Arial, sans-serif;
+            margin: 0;
             background: linear-gradient(to bottom, #1f2847, #ffdcdc);
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: 100vh;
-            padding: 20px;
         }
 
-        /* Main Container */
         .container {
-            background-color: #fff;
-            width: 100%;
-            max-width: 500px;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
-
-        /* Page Title */
-        .container h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        /* Search Bar */
-        .search-bar {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .search-bar input {
+            margin: 20px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
             width: 80%;
-            padding: 10px;
-            border: 2px solid #ccc;
-            border-radius: 8px 0 0 8px;
-            outline: none;
+            max-width: 800px;
         }
 
-        .search-bar button {
-            background-color: #1f2847;
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .question h2 {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .options {
+            margin-top: 10px;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .btn-submit {
+            background: #1f3b4d;
             color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 0 8px 8px 0;
-            cursor: pointer;
-        }
-
-        .search-bar button:hover {
-            background-color: #1f2847;
-        }
-
-        /* Dropdown Menu */
-        .dropdown {
-            margin: 20px 0;
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown select {
-            width: 100%;
-            max-width: 300px;
-            padding: 10px;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-            outline: none;
-            font-size: 1rem;
-        }
-
-        .dropdown button {
-            margin-top: 20px;
-            background-color: #1f2847;
-            color: white;
-            border: none;
             padding: 10px 20px;
-            border-radius: 8px;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s ease;
+            font-size: 16px;
+            margin-top: 20px;
         }
 
-        .dropdown button:hover {
-            background-color: #1f2847;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                width: 90%;
-                max-width: 100%;
-            }
-
-            .search-bar input {
-                width: 70%;
-            }
+        .btn-submit:hover {
+            background: #152731;
         }
     </style>
 </head>
 <body>
-    <!-- Main Container -->
-    <div class="container">
+    <div class="container" id="quiz-container">
         <h1>Quiz Attempt</h1>
-
-        <!-- Search Bar -->
-        <div class="search-bar">
-            <input type="text" placeholder="Search category or topic..." id="searchInput">
-            <button onclick="searchCategory()">Search</button>
-        </div>
-
-        <!-- Dropdown for Categories -->
-        <div class="dropdown">
-            <select id="categorySelect">
-                <option value="" disabled selected>Select a Category</option>
-                <option value="cn.html">CN (Computer Networks)</option>
-                <option value="os.html">OS (Operating Systems)</option>
-                <option value="dsa.html">DSA (Data Structures and Algorithms)</option>
-            </select>
-            <button onclick="goToCategory()">Go</button>
-        </div>
+        <!-- Questions will be dynamically inserted here -->
     </div>
-
-    <!-- JavaScript for Redirection and Search -->
     <script>
-        // Redirect based on selected category
-        function goToCategory() {
-            const selectedCategory = document.getElementById('categorySelect').value;
-            if (selectedCategory) {
-                window.location.href = selectedCategory;
-            } else {
-                alert("Please select a category!");
+        // Fetch questions for the selected quiz
+        async function fetchQuestions() {
+            // Extract quiz_id from URL query parameters
+
+            try {
+                const response = await fetch('/api/user/quiz/{{quiz_id}}/questions', { credentials: "include" });
+                const questions = await response.json();
+
+                if (questions.error) {
+                    document.getElementById('quiz-container').innerHTML = "<p>${questions.error}</p>";
+                    return;
+                }
+
+                renderQuestions(questions);
+            } catch (error) {
+                console.error('Error fetching questions:', error);
+                document.getElementById('quiz-container').innerHTML = "<p>Error loading questions. Please try again later.</p>";
             }
         }
 
-        // Search Functionality
-        function searchCategory() {
-            const input = document.getElementById('searchInput').value.toLowerCase();
-            if (input.includes("cn")) {
-                window.location.href = "cn.html";
-            } else if (input.includes("os")) {
-                window.location.href = "os.html";
-            } else if (input.includes("dsa")) {
-                window.location.href = "dsa.html";
-            } else {
-                alert("Category not found! Please try 'CN', 'OS', or 'DSA'.");
-            }
+        // Render questions
+        function renderQuestions(questions) {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = ''; // Clear existing content
+
+            questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+
+                const optionsHtml = question.options
+                    .map(
+                        (option) => `
+                        <label>
+                            <input type="radio" name="question-${question.question_id}" value="${option}" />
+                            ${option}
+                        </label>
+                    `
+                    )
+                    .join('');
+
+                questionDiv.innerHTML = `
+                    <h2>Q${index + 1}: ${question.question_content}</h2>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                `;
+
+                container.appendChild(questionDiv);
+            });
+
+            // Add submit button
+            const submitButton = document.createElement('button');
+            submitButton.textContent = 'Submit';
+            submitButton.classList.add('btn-submit');
+            submitButton.addEventListener('click', handleSubmit);
+
+            container.appendChild(submitButton);
         }
+
+        // Handle submission
+        function handleSubmit() {
+            const container = document.getElementById('quiz-container');
+            const questions = container.getElementsByClassName('question');
+            const answers = [];
+
+            for (let question of questions) {
+                const questionId = question.querySelector('input[type="radio"]').name.split('-')[1];
+                const selectedOption = question.querySelector('input[type="radio"]:checked');
+
+                if (selectedOption) {
+                    answers.push({
+                        question_id: questionId,
+                        answer: selectedOption.value
+                    });
+                } else {
+                    answers.push({
+                        question_id: questionId,
+                        answer: null
+                    });
+                }
+            }
+
+            const quizId = window.location.pathname.split('/').pop();
+
+            fetch(`/api/user/quiz/${quizId}/submit`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({ quiz_id: quizId, answers: answers })
+            })
+            .then(response => response.json())
+            .then(data => {
+                attemptId = data.attempt_id;
+                window.location.href = `/result/${attemptId}`;
+                
+            })
+            .catch(error => {
+                console.error('Error submitting quiz:', error);
+                alert('Error submitting quiz. Please try again later.');
+            });
+        }
+
+        // Fetch questions on page load
+        document.addEventListener('DOMContentLoaded', fetchQuestions);
     </script>
 </body>
 </html>
