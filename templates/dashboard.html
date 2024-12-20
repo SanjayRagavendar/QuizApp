@@ -128,6 +128,9 @@
             <img src="static\images\userlogo.jpeg" alt="Logo" class="logo-image" id="dropdownMenuButton">
             <div class="dropdown-content">
                 <a href="/account" id="accountLink">Account</a>
+                {% if role == 'admin' %}
+                <a href="/admin" id="adminLink">Admin Dashboard</a>
+                {% endif %}
                 <a href="/logout" id="logoutLink">Logout</a>
             </div>
         </div>

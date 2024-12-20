@@ -16,7 +16,7 @@ def admin_required():
                     return jsonify({"msg": "Course admins only!"}), 403
             except Exception as e:
                 next_url = urlparse(request.url).path
-                response = redirect(url_for('auth_dashboard.login', next=next_url))
+                response = redirect(url_for('frontend.loginpage', next=next_url))
                 unset_jwt_cookies(response)
                 return response, 302        
         return decorator

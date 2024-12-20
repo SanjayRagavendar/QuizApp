@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Questions</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #1f2847, #ffdcdc);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: #fff;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown.show .dropdown-content {
+            display: block;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .question-form, .questions-list {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            width: 80%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .options-container {
+            display: none;
+        }
+
+        .option-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .option-group input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .option-group input[type="text"] {
+            flex-grow: 1;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #1f3b4d;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background: #152731;
+        }
+
+        .question-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .question-actions {
+            margin-top: 10px;
+        }
+
+        .edit-btn {
+            background-color: #4CAF50;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">Manage Questions</div>
+        <div class="dropdown">
+            <img src="static/images/userlogo.jpeg" alt="Logo" class="logo-image" id="dropdownMenuButton">
+            <div class="dropdown-content">
+                <a href="/account" id="accountLink">Account</a>
+                <a href="/logout" id="logoutLink">Logout</a>
+            </div>
+        </div>
+    </header>
+    <main class="content">
+        <form class="question-form" id="questionForm">
+            <div class="form-group">
+                <label for="questionType">Question Type:</label>
+                <select id="questionType" required>
+                    <option value="">Select a question type</option>
+                    <option value="mcq">Multiple Choice</option>
+                    <option value="truefalse">True/False</option>
+                    <option value="shortanswer">Short Answer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="questionText">Question:</label>
+                <textarea id="questionText" rows="3" required></textarea>
+            </div>
+            <div id="mcqOptions" class="options-container">
+                <div class="option-group">
+                    <input type="radio" name="correctAnswer" value="0" required>
+                    <input type="text" placeholder="Option 1" required>
+                </div>
+                <div class="option-group">
+                    <input type="radio" name="correctAnswer" value="1" required>
+                    <input type="text" placeholder="Option 2" required>
+                </div>
+                <div class="option-group">
+                    <input type="radio" name="correctAnswer" value="2" required>
+                    <input type="text" placeholder="Option 3" required>
+                </div>
+                <div class="option-group">
+                    <input type="radio" name="correctAnswer" value="3" required>
+                    <input type="text" placeholder="Option 4" required>
+                </div>
+            </div>
+            <div id="trueFalseOptions" class="options-container">
+                <div class="option-group">
+                    <input type="radio" name="tfCorrectAnswer" value="true" required>
+                    <label>True</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" name="tfCorrectAnswer" value="false" required>
+                    <label>False</label>
+                </div>
+            </div>
+            <div id="shortAnswerOption" class="options-container">
+                <div class="form-group">
+                    <label for="shortAnswerText">Correct Answer:</label>
+                    <input type="text" id="shortAnswerText" required>
+                </div>
+            </div>
+            <button type="submit" id="submitQuestion">Add Question</button>
+        </form>
+        <div class="questions-list" id="questionsList">
+            <h2>Existing Questions</h2>
+            <!-- Existing questions will be dynamically added here -->
+        </div>
+    </main>
+
+    <script>
+    const questionType = document.getElementById('questionType');
+    const mcqOptions = document.getElementById('mcqOptions');
+    const trueFalseOptions = document.getElementById('trueFalseOptions');
+    const shortAnswerOption = document.getElementById('shortAnswerOption');
+
+    function disableInputs(container) {
+        const inputs = container.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            input.disabled = true;
+        });
+    }
+
+    function enableInputs(container) {
+        const inputs = container.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            input.disabled = false;
+        });
+    }
+
+    questionType.addEventListener('change', function() {
+        // Hide and disable all option containers
+        mcqOptions.style.display = 'none';
+        disableInputs(mcqOptions);
+
+        trueFalseOptions.style.display = 'none';
+        disableInputs(trueFalseOptions);
+
+        shortAnswerOption.style.display = 'none';
+        disableInputs(shortAnswerOption);
+
+        // Show and enable the selected option container
+        switch(this.value) {
+            case 'mcq':
+                mcqOptions.style.display = 'block';
+                enableInputs(mcqOptions);
+                break;
+            case 'truefalse':
+                trueFalseOptions.style.display = 'block';
+                enableInputs(trueFalseOptions);
+                break;
+            case 'shortanswer':
+                shortAnswerOption.style.display = 'block';
+                enableInputs(shortAnswerOption);
+                break;
+        }
+    });
+
+    // Initial setup to disable all inputs except the default selected option
+    document.addEventListener('DOMContentLoaded', function() {
+        disableInputs(mcqOptions);
+        disableInputs(trueFalseOptions);
+        disableInputs(shortAnswerOption);
+        const selectedType = questionType.value;
+        if (selectedType) {
+            enableInputs(document.getElementById(selectedType + 'Options'));
+        }
+    });
+        
+        let questions = [];
+        let editingQuestionId = null;
+
+        const questionForm = document.getElementById('questionForm');
+        const submitQuestionBtn = document.getElementById('submitQuestion');
+
+        questionForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const questionText = document.getElementById('questionText').value;
+            let answer;
+
+            switch(questionType.value) {
+                case 'mcq':
+                    const options = Array.from(mcqOptions.querySelectorAll('input[type="text"]')).map(input => input.value);
+                    const correctAnswerIndex = document.querySelector('input[name="correctAnswer"]:checked').value;
+                    answer = {
+                        type: 'mcq',
+                        options: options,
+                        correctAnswer: options[parseInt(correctAnswerIndex)]
+                    };
+                    break;
+                case 'truefalse':
+                    answer = {
+                        type: 'tf',
+                        correctAnswer: document.querySelector('input[name="tfCorrectAnswer"]:checked').value === 'true'
+                    };
+                    break;
+                case 'short':
+                    answer = {
+                        type: 'shortanswer',
+                        correctAnswer: document.getElementById('shortAnswerText').value
+                    };
+                    break;
+            }
+
+            const question = {
+                id: editingQuestionId || Date.now(),
+                text: questionText,
+                answer: answer
+            };
+
+            if (editingQuestionId) {
+                const index = questions.findIndex(q => q.id === editingQuestionId);
+                questions[index] = question;
+                editingQuestionId = null;
+                submitQuestionBtn.textContent = 'Add Question';
+            } else {
+                questions.push(question);
+            }
+
+            console.log('Question added/updated:', question);
+            // Here you would typically send this data to your backend
+            fetch('/api/admin/quiz/{{quiz_id}}/questions', { method: 'POST',headers: {'Content-Type': 'application/json'}, body: JSON.stringify(question) }).then(() => {
+                alert('Question saved successfully!');
+                questionForm.reset();
+                fetchAndDisplayQuestions();
+            });
+        });
+
+    function getAnswerDisplay(answer) {
+        if (!answer) return '';
+        switch(answer.type) {
+            case 'mcq':
+                return `
+                    <p><strong>Options:</strong></p>
+                    <ol>
+                        ${answer.options.map((option, index) => `
+                            <li>${option}${answer.correctAnswer === option ? ' (Correct)' : ''}</li>
+                        `).join('')}
+                    </ol>
+                `;
+            case 'tf':
+                return `<p><strong>Correct Answer:</strong> ${answer.correctAnswer === '1' ? 'True' : 'False'}</p>`;
+            case 'shortanswer':
+                return `<p><strong>Correct Answer:</strong> ${answer.correctAnswer}</p>`;
+            default:
+                return '';
+        }
+    }
+
+        function editQuestion(id) {
+            const question = questions.find(q => q.id === id);
+            if (question) {
+                questionType.value = question.answer.type;
+                document.getElementById('questionText').value = question.text;
+                
+                switch(question.answer.type) {
+                    case 'mcq':
+                        mcqOptions.style.display = 'block';
+                        question.answer.options.forEach((option, index) => {
+                            mcqOptions.querySelectorAll('input[type="text"]')[index].value = option;
+                        });
+                        mcqOptions.querySelector(`input[name="correctAnswer"][value="${question.answer.correctAnswer}"]`).checked = true;
+                        break;
+                    case 'truefalse':
+                        trueFalseOptions.style.display = 'block';
+                        trueFalseOptions.querySelector(`input[name="tfCorrectAnswer"][value="${question.answer.correctAnswer}"]`).checked = true;
+                        break;
+                    case 'shortanswer':
+                        shortAnswerOption.style.display = 'block';
+                        document.getElementById('shortAnswerText').value = question.answer.correctAnswer;
+                        break;
+                }
+
+                editingQuestionId = id;
+                submitQuestionBtn.textContent = 'Update Question';
+            }
+        }
+
+        function deleteQuestion(id) {
+            if (confirm('Are you sure you want to delete this question?')) {
+                questions = questions.filter(q => q.id !== id);
+                fetchAndDisplayQuestions();
+            }
+        }
+
+        // Fetch and display existing questions from the API
+        async function fetchAndDisplayQuestions() {
+            try {
+                const response = await fetch(`/api/admin/quiz/{{quiz_id}}/questions`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                questions = data.map(item => ({
+                    id: item.question_id,
+                    text: item.question_content,
+                    answer: {
+                        type: item.question_type,
+                        options: item.options,
+                        correctAnswer: item.correct_answer
+                    }
+                }));
+                
+                questionsList.innerHTML = '<h2>Existing Questions</h2>';
+                questions.forEach(question => {
+                    const questionElement = document.createElement('div');
+                    questionElement.className = 'question-item';
+                    questionElement.innerHTML = `
+                        <p><strong>Question:</strong> ${question.text}</p>
+                        <p><strong>Type:</strong> ${question.answer.type}</p>
+                        ${getAnswerDisplay(question.answer)}
+                        <div class="question-actions">
+                            <button class="edit-btn" onclick="editQuestion(${question.id})">Edit</button>
+                            <button class="delete-btn" onclick="deleteQuestion(${question.id})">Delete</button>
+                        </div>
+                    `;
+                    questionsList.appendChild(questionElement);
+                });
+            } catch (error) {
+                console.error('Failed to fetch questions:', error);
+                alert('Failed to load questions. Please try again later.');
+            }
+        }
+
+        // Fetch and display questions when the page loads
+        fetchAndDisplayQuestions();
+
+        // Dropdown functionality
+        document.getElementById("dropdownMenuButton").addEventListener("click", function () {
+            const dropdown = this.parentElement;
+            dropdown.classList.toggle("show");
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener("click", function (e) {
+            if (!e.target.matches("#dropdownMenuButton")) {
+                const dropdown = document.querySelector(".dropdown");
+                if (dropdown && dropdown.classList.contains("show")) {
+                    dropdown.classList.remove("show");
+                }
+            }
+        });
+
+        // Logout functionality
+        document.getElementById("logoutLink").addEventListener("click", function () {
+            window.location.href = "login.html";
+        });
+
+        // Account functionality
+        document.getElementById("accountLink").addEventListener("click", function () {
+            window.location.href = "account.html";
+        });
+    </script>
+</body>
+</html>
+
