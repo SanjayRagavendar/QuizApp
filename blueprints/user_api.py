@@ -53,6 +53,7 @@ def get_questions(quiz_id):
 def submit_quiz(quiz_id):
     user_id = get_jwt_identity()
     data = request.get_json()
+    print(data)
     answers = data.get('answers')
     score = 0
     questions = Question.query.filter_by(quiz_id=quiz_id).all()
