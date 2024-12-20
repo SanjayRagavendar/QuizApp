@@ -16,6 +16,11 @@ QuizApp is a dynamic and interactive web application designed to test users' kno
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
 - **Version Control**: Git and GitHub
+## ER Diagram
+![WhatsApp Image 2024-12-19 at 19 16 15_e0b280c1](https://github.com/user-attachments/assets/a9d63a7d-05de-4bef-8ffb-11793cf42275)
+
+## WorkFlow
+![WhatsApp Image 2024-12-20 at 00 04 36_3b67a2c8](https://github.com/user-attachments/assets/b4b5658a-97c2-4826-b03c-3b0f532ae251)
 
 ## Installation and Setup
 
