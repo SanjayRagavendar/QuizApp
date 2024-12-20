@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, redirect, url_for
+from flask import Flask, request, jsonify, redirect, url_for, send_from_directory
 from flask_jwt_extended import JWTManager, unset_jwt_cookies
 from datetime import timedelta
 from models import *
@@ -49,6 +49,11 @@ app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(frontend_bp)
 app.register_blueprint(admin_api, url_prefix='/api/admin')
 app.register_blueprint(user_api, url_prefix='/api/user')
+
+
+@app.route('/favicon.ico', methods=['GET'])
+def favicon():
+    return send_from_directory('static', 'images/favicon.ico')
 
 if __name__ == '__main__':
     with app.app_context():
